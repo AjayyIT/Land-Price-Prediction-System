@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Land Price Prediction – Tamil Nadu</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+
+<!-- ═══════════════════════════ TOP NAV ═══════════════════════════════════ -->
+<nav class="nav">
+  <div class="nav-brand">
+    <span class="nav-icon">◈</span>
+    <span>LandIQ <em>Tamil Nadu</em></span>
+  </div>
+  <div class="nav-links">
+    <a href="#predict-section" class="nav-link active">Predict</a>
+    <a href="#analytics-section" class="nav-link">Analytics</a>
+  </div>
+  <div class="nav-badge">AI-Powered</div>
+</nav>
+
+<!-- ═══════════════════════════ HERO ══════════════════════════════════════ -->
+<header class="hero">
+  <div class="hero-grid-lines"></div>
+  <div class="hero-content">
+    <div class="hero-tag">Intelligence Platform · Tamil Nadu Real Estate</div>
+    <h1 class="hero-title">
+      AI-Based Land Price<br />
+      <span class="hero-accent">Prediction System</span>
+    </h1>
+    <p class="hero-sub">
+      Data-driven property valuation across 33 districts using proximity analytics,
+      area classification, and infrastructure scoring.
+    </p>
+    <div class="hero-stats" id="heroStats">
+      <div class="h-stat"><span class="h-num" id="hTotal">—</span><span class="h-lbl">Records</span></div>
+      <div class="h-stat"><span class="h-num" id="hAvg">—</span><span class="h-lbl">Avg ₹/sqft</span></div>
+      <div class="h-stat"><span class="h-num" id="hMax">—</span><span class="h-lbl">Peak ₹/sqft</span></div>
+      <div class="h-stat"><span class="h-num" id="hDistricts">—</span><span class="h-lbl">Districts</span></div>
+    </div>
+  </div>
+</header>
+
+<!-- ═══════════════════════════ MAIN CONTENT ══════════════════════════════ -->
+<main class="main-grid">
+
+  <!-- ── LEFT: FORM ─────────────────────────────────────────────────────── -->
+  <section class="card form-card" id="predict-section">
+    <div class="card-header">
+      <span class="card-icon">⬡</span>
+      <h2>Property Parameters</h2>
+    </div>
+
+    <form id="predictForm" novalidate>
+
+      <!-- Row 1 -->
+      <div class="form-row">
+        <div class="field">
+          <label>District</label>
+          <div class="select-wrap">
+            <select id="district" name="district" required>
+              <option value="">Select district…</option>
+              {% for d in districts %}
+              <option value="{{ d }}">{{ d }}</option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+        <div class="field">
+          <label>Area Type</label>
+          <div class="select-wrap">
+            <select id="area_type" name="area_type" required>
+              <option value="">Select type…</option>
+              {% for a in area_types %}
+              <option value="{{ a }}">{{ a }}</option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Row 2 -->
+      <div class="form-row">
+        <div class="field">
+          <label>Road Facility</label>
+          <div class="select-wrap">
+            <select id="road_facility" name="road_facility" required>
+              <option value="">Select…</option>
+              <option value="Yes">Yes – Road available</option>
+              <option value="No">No – No road</option>
+            </select>
+          </div>
+        </div>
+        <div class="field">
+          <label>Land Size (sqft)</label>
+          <input type="number" id="land_sqft" name="land_sqft"
+                 min="100" max="1000000" placeholder="e.g. 2400" required class="no-arrows" />
+        </div>
+      </div>
+
+      <!-- Distance Inputs -->
+      <div class="dist-grid">
+        <div class="field">
+          <label>🏫 School Distance (km)</label>
+          <input type="number" id="school_km" name="school_km"
+                 min="0.1" max="100" step="0.1" placeholder="e.g. 2.5" required class="no-arrows" />
+        </div>
+        <div class="field">
+          <label>🏥 Hospital Distance (km)</label>
+          <input type="number" id="hospital_km" name="hospital_km"
+                 min="0.1" max="100" step="0.1" placeholder="e.g. 3.0" required class="no-arrows" />
+        </div>
+        <div class="field">
+          <label>🚌 Bus Stand Distance (km)</label>
+          <input type="number" id="bus_km" name="bus_km"
+                 min="0.1" max="100" step="0.1" placeholder="e.g. 1.5" required class="no-arrows" />
+        </div>
+        <div class="field">
+          <label>✈️ Airport Distance (km)</label>
+          <input type="number" id="airport_km" name="airport_km"
+                 min="0.1" max="200" step="0.5" placeholder="e.g. 20.0" required class="no-arrows" />
+        </div>
+      </div><!-- /dist-grid -->
+
+      <button type="submit" class="btn-predict" id="submitBtn">
+        <span class="btn-text">Predict Land Price</span>
+        <span class="btn-spinner" id="spinner" hidden>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3" stroke-dasharray="40 20"/>
+          </svg>
+        </span>
+      </button>
+
+    </form><!-- /predictForm -->
+
+    <!-- Error banner -->
+    <div id="errorBanner" class="error-banner" hidden></div>
+  </section>
+
+  <!-- ── RIGHT: RESULT ───────────────────────────────────────────────────── -->
+  <aside class="result-pane" id="resultPane">
+
+    <!-- Empty state -->
+    <div class="empty-state" id="emptyState">
+      <div class="empty-icon">◈</div>
+      <p>Fill in the property parameters and hit <strong>Predict</strong> to get your valuation.</p>
+    </div>
+
+    <!-- Result cards (hidden until prediction) -->
+    <div id="resultCards" hidden>
+
+      <div class="result-header">
+        <span class="result-tag" id="resultTag">Prediction Result</span>
+        <span class="result-meta" id="resultMeta"></span>
+      </div>
+
+      <div class="price-card">
+        <div class="price-label">Predicted Land Value</div>
+        <div class="price-value" id="priceValue">₹ 0</div>
+        <div class="price-sub" id="priceSub"></div>
+      </div>
+
+      <div class="investment-card" id="investCard">
+        <div class="inv-label">Investment Analysis</div>
+        <div class="inv-type" id="invType"></div>
+        <div class="inv-reason" id="invReason"></div>
+        <div class="inv-meta" id="invMeta"></div>
+      </div>
+
+      <div class="breakdown-card">
+        <div class="bk-title">Calculation Breakdown</div>
+        <div class="bk-row"><span>Avg Price / sqft</span><span id="bkAvg"></span></div>
+        <div class="bk-row"><span>Land Size</span><span id="bkSize"></span></div>
+        <div class="bk-row bk-total"><span>Total Value</span><span id="bkTotal"></span></div>
+        <div class="bk-row"><span>Avg Facility Distance</span><span id="bkDist"></span></div>
+        <div class="bk-row"><span>Data Samples Used</span><span id="bkSamples"></span></div>
+      </div>
+
+    </div><!-- /resultCards -->
+  </aside>
+
+</main><!-- /main-grid -->
+
+<!-- ═══════════════════════════ ANALYTICS SECTION ═════════════════════════ -->
+<section class="analytics" id="analytics-section">
+  <div class="analytics-header">
+    <span class="card-icon">◉</span>
+    <h2>Business Intelligence Dashboard</h2>
+    <p>Real-time analytics computed from the full dataset</p>
+  </div>
+
+  <div class="charts-grid">
+
+    <div class="chart-card">
+      <div class="chart-title">Average Price per sqft by District (Top 6)</div>
+      <canvas id="districtChart"></canvas>
+    </div>
+
+    <div class="chart-card">
+      <div class="chart-title">Price by Area Type</div>
+      <canvas id="areaChart"></canvas>
+    </div>
+
+    <div class="chart-card">
+      <div class="chart-title">Road Facility Impact on Price</div>
+      <canvas id="roadChart"></canvas>
+    </div>
+
+    <div class="chart-card">
+      <div class="chart-title">School Distance vs Price</div>
+      <canvas id="distPriceChart"></canvas>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════════════════════════ FOOTER ════════════════════════════════════ -->
+<footer class="footer">
+  <span>LandIQ Tamil Nadu · AI-Based Land Price Prediction System</span>
+  <span>Built with Flask + Chart.js · Data: 10,000 records</span>
+</footer>
+
+<script src="/static/script.js"></script>
+</body>
+</html>
