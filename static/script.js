@@ -1,7 +1,3 @@
-/**
- * LandIQ Tamil Nadu — Frontend Script
- * Handles: form interactions, API calls, result rendering, Chart.js charts
- */
 
 "use strict";
 
