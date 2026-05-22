@@ -1,10 +1,4 @@
-/* ══════════════════════════════════════════════════════════════
-   LandIQ Tamil Nadu — Production Stylesheet
-   Fonts: Manrope (display) + Inter (body)
-   Theme: Dark intelligence dashboard — deep navy + electric teal
-   ══════════════════════════════════════════════════════════════ */
 
-/* ── Variables ──────────────────────────────────────────────── */
 :root {
   --bg:         #080e1a;
   --bg2:        #0d1628;
